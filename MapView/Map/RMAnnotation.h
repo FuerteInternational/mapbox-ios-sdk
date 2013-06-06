@@ -107,6 +107,8 @@
 
 @property (nonatomic, weak) RMQuadTreeNode *quadTreeNode;
 
+@property (nonatomic, strong) UIImage *image;
+
 /** @name Filtering Types of Annotations */
 
 /** Whether the annotation is related to display of the user's location. Useful for filtering purposes when providing annotation layers in the delegate. */
