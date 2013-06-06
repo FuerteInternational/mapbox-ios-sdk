@@ -405,20 +405,16 @@
 
 + (UIImage *)resourceImageNamed:(NSString *)imageName
 {
+    NSAssert([[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"], @"Resource bundle not found in application.");
+
     if ( ! [[imageName pathExtension] length])
         imageName = [imageName stringByAppendingString:@".png"];
 
-    return [UIImage imageWithContentsOfFile:[[self class] pathForBundleResourceNamed:imageName ofType:nil]];
-}
-
-+ (NSString *)pathForBundleResourceNamed:(NSString *)name ofType:(NSString *)extension
-{
-    NSAssert([[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"], @"Resource bundle not found in application.");
-
-    NSString *bundlePath      = [[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"];
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"MapBox" ofType:@"bundle"];
     NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
+    NSString *imagePath = [resourcesBundle pathForResource:imageName ofType:nil];
 
-    return [resourcesBundle pathForResource:name ofType:extension];
+    return [UIImage imageWithContentsOfFile:imagePath];
 }
 
 - (void)dealloc
@@ -2288,7 +2284,7 @@
 
     _maxZoom = newMaxZoom;
 
-//    RMLog(@"New maxZoom:%f", newMaxZoom);
+    RMLog(@"New maxZoom:%f", newMaxZoom);
 
     _mapScrollView.maximumZoomScale = exp2f(newMaxZoom);
 }
@@ -2651,7 +2647,7 @@
     CGPoint newPosition = CGPointMake((normalizedProjectedPoint.x / _metersPerPixel) - _mapScrollView.contentOffset.x,
                                       _mapScrollView.contentSize.height - (normalizedProjectedPoint.y / _metersPerPixel) - _mapScrollView.contentOffset.y);
 
-//    RMLog(@"Change annotation at {%f,%f} in mapView {%f,%f}", annotation.position.x, annotation.position.y, mapScrollView.contentSize.width, mapScrollView.contentSize.height);
+//    RMLog(@"Change annotation at {%f,%f} in mapView {%f,%f}", annotation.position.x, annotation.position.y, _mapScrollView.contentSize.width, _mapScrollView.contentSize.height);
 
     [annotation setPosition:newPosition animated:animated];
 }
@@ -2934,11 +2930,12 @@
     {
         [_annotations removeObject:annotation];
         [_visibleAnnotations removeObject:annotation];
-        [self.quadTree removeAnnotation:annotation];
-        annotation.layer = nil;
     }
 
-    [self correctPositionOfAllAnnotations];
+    [self.quadTree removeAnnotation:annotation];
+
+    // Remove the layer from the screen
+    annotation.layer = nil;
 }
 
 - (void)removeAnnotations:(NSArray *)annotationsToRemove
@@ -3237,7 +3234,7 @@
                 //
                 [self setCenterCoordinate:self.userLocation.location.coordinate animated:YES];
             }
-            else
+            else  
             {
                 // otherwise re-center and zoom in to near accuracy confidence
                 //

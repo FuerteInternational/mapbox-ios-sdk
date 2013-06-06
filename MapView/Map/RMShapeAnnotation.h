@@ -39,6 +39,8 @@
 *   @return An initialized shape annotation object, or `nil` if an annotation was unable to be initialized. */
 - (id)initWithMapView:(RMMapView *)aMapView points:(NSArray *)points;
 
+-(void)setImage:(UIImage *)image;
+
 /** The array of points associated with the shape. (read-only) */
 @property (nonatomic, readonly, strong) NSArray *points;
 

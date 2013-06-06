@@ -35,6 +35,7 @@
 #import "RMConfiguration.h"
 #import "RMCoordinateGridSource.h"
 #import "RMDatabaseCache.h"
+#import "RMImageAnnotation.h"
 #import "RMInteractiveSource.h"
 #import "RMMBTilesSource.h"
 #import "RMMapBoxSource.h"
