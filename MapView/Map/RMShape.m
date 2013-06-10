@@ -185,7 +185,7 @@
     CGRect clippedBounds = nonClippedBounds;
 
     float offset;
-    const float outset = 150.0f; // provides a buffer off screen edges for when path is scaled or moved
+    const float outset = 130000.0f; // provides a buffer off screen edges for when path is scaled or moved
 
     CGPoint newPosition = self.annotation.position;
 
