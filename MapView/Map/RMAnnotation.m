@@ -150,7 +150,6 @@
 
         if (self.image != nil) {
             layer.contents = (id)self.image.CGImage;
-            layer.opacity = 1.0f; // 0.75f;
             layer.bounds =CGRectMake(0, 0, self.image.size.width, self.image.size.height);
             layer.frame = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
         }

@@ -12,6 +12,8 @@
 
 - (id)initWithMapView:(RMMapView *)aMapView topLeft:(CLLocationCoordinate2D)topLeft bottomRight:(CLLocationCoordinate2D)bottomRight image:(UIImage*)image;
 
+-(void)changeOpacity:(float)opacity;
+
 @property (nonatomic, strong) UIImage *image;
 
 @end

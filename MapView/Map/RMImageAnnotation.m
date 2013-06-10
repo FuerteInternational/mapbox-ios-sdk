@@ -36,10 +36,13 @@
     //  Set the image property of our underlying "RMShapeAnnotation" class (and it's "RMAnnotation"
     //  class) to make sure the CALayer displays our image as it's background
     [super setImage:self.image];
-    
     return self;
 }
 
+-(void)changeOpacity:(float)opacity
+{
+    self.layer.opacity = opacity;
+}
 
 - (RMMapLayer *)layer
 {
