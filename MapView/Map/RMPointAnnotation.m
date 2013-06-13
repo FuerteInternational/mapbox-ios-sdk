@@ -44,9 +44,9 @@
 {
     if ( ! [super layer])
     {
-        RMMarker *marker = [[RMMarker alloc] initWithMapBoxMarkerImage];
+        RMMarker *marker = [[RMMarker alloc] initWithUIImage:self.image anchorPoint:self.anchorPoint];
 
-        marker.canShowCallout = YES;
+        marker.canShowCallout = NO;
 
         super.layer = marker;
     }
