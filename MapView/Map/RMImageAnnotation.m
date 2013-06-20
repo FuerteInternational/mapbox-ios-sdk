@@ -41,7 +41,21 @@
 
 -(void)changeOpacity:(float)opacity
 {
+    if (opacity == 0)
+    {
+        self.layer.opacity = opacity;
+        return;
+    }
+    
+    CABasicAnimation *fadeAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeAnimation.duration = 0.3;
+    fadeAnimation.fromValue =  [NSNumber numberWithFloat:self.layer.opacity];
+    fadeAnimation.toValue =  [NSNumber numberWithFloat:opacity];
+    fadeAnimation.fillMode = kCAFillModeForwards;
+    fadeAnimation.removedOnCompletion = NO;
     self.layer.opacity = opacity;
+    [self.layer addAnimation:fadeAnimation forKey:@"opacity"];
+
 }
 
 - (RMMapLayer *)layer
