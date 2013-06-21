@@ -72,6 +72,8 @@ typedef enum : NSUInteger {
 
 #pragma mark - View properties
 
+@property (nonatomic, strong) RMMapTiledLayerView *lastLayerView;       // mjg Jun2013
+
 /** @name Configuring Map Behavior */
 
 /** A Boolean value that determines whether the user may scroll around the map.
@@ -133,6 +135,12 @@ typedef enum : NSUInteger {
 
 /** A Boolean value indicating whether to show a small logo in the corner of the map view. Defaults to `YES`. */
 @property (nonatomic, assign) BOOL showLogoBug;
+
+#pragma mark Method changes
+@property (nonatomic, assign) RMMapView *dependantMapView;
+@property (nonatomic, strong) RMMapScrollView *mapScrollView;
+//@property (nonatomic, strong) RMLoadingTileView *loadingTileView;
+-(void)makeMapViewTransparent;
 
 #pragma mark - Initializers
 

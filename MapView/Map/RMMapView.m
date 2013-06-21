@@ -53,6 +53,9 @@
 
 #import "SMCalloutView.h"
 
+#import "MBMBTilesSource.h"     //  mjg June2013
+
+
 #pragma mark --- begin constants ----
 
 #define kZoomRectPixelBuffer 150.0
@@ -786,11 +789,17 @@
 
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
 {
+    if (_dependantMapView) {
+        [_dependantMapView setCenterCoordinate:centerCoordinate];
+    }
     [self setCenterProjectedPoint:[_projection coordinateToProjectedPoint:centerCoordinate]];
 }
 
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate animated:(BOOL)animated
 {
+    if (_dependantMapView) {
+        [_dependantMapView setCenterCoordinate:centerCoordinate animated:animated];
+    }
     [self setCenterProjectedPoint:[_projection coordinateToProjectedPoint:centerCoordinate] animated:animated];
 }
 
@@ -1117,6 +1126,14 @@
 }
 
 #pragma mark -
+#pragma mark Custom Method methods
+
+- (void)makeMapViewTransparent {
+    _backgroundView = [[UIView alloc] initWithFrame:CGRectMake(-200, -200, 2, 2)];
+    [self setBackgroundColor:[UIColor clearColor]];
+}
+
+#pragma mark -
 #pragma mark MapView (ScrollView)
 
 - (void)createMapView
@@ -1302,6 +1319,10 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if (_dependantMapView) {
+        [_dependantMapView.mapScrollView setContentOffset:scrollView.contentOffset];
+        [_dependantMapView scrollViewDidScroll:_dependantMapView.mapScrollView];
+    }
     if (_loadingTileView)
     {
         CGSize delta = CGSizeMake(scrollView.contentOffset.x - _lastContentOffset.x, scrollView.contentOffset.y - _lastContentOffset.y);
@@ -1312,6 +1333,14 @@
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
+    if (_dependantMapView) {
+        [_dependantMapView.mapScrollView setZoomScale:scrollView.zoomScale];
+        [_dependantMapView scrollViewDidZoom:_dependantMapView.mapScrollView];
+        
+        [_dependantMapView.mapScrollView setContentOffset:scrollView.contentOffset];
+        [_dependantMapView scrollViewDidScroll:_dependantMapView.mapScrollView];
+    }
+    
     BOOL wasUserAction = (scrollView.pinchGestureRecognizer.state == UIGestureRecognizerStateChanged);
 
     [self registerZoomEventByUser:wasUserAction];
@@ -1991,25 +2020,25 @@
 {
     if ([_tileSourcesContainer.tileSources containsObject:newTileSource])
         return;
-
+    
     if ( ! [_tileSourcesContainer addTileSource:newTileSource atIndex:index])
         return;
-
+    
     RMProjectedPoint centerPoint = [self centerProjectedPoint];
-
+    
     _projection = [_tileSourcesContainer projection];
-
+    
     _mercatorToTileProjection = [_tileSourcesContainer mercatorToTileProjection];
-
+    
     [self setTileSourcesConstraintsFromLatitudeLongitudeBoundingBox:[_tileSourcesContainer latitudeLongitudeBoundingBox]];
-
+    
     [self setTileSourcesMinZoom:_tileSourcesContainer.minZoom];
     [self setTileSourcesMaxZoom:_tileSourcesContainer.maxZoom];
     [self setZoom:[self zoom]]; // setZoom clamps zoom level to min/max limits
-
+    
     // Recreate the map layer
     NSUInteger tileSourcesContainerSize = [[_tileSourcesContainer tileSources] count];
-
+    
     if (tileSourcesContainerSize == 1)
     {
         [self createMapView];
@@ -2018,17 +2047,35 @@
     {
         int tileSideLength = [_tileSourcesContainer tileSideLength];
         CGSize contentSize = CGSizeMake(tileSideLength, tileSideLength); // zoom level 1
-
+        
         RMMapTiledLayerView *tiledLayerView = [[RMMapTiledLayerView alloc] initWithFrame:CGRectMake(0.0, 0.0, contentSize.width, contentSize.height) mapView:self forTileSource:newTileSource];
-
-        ((CATiledLayer *)tiledLayerView.layer).tileSize = CGSizeMake(tileSideLength, tileSideLength);
-
-        if (index >= [[_tileSourcesContainer tileSources] count])
-            [_tiledLayersSuperview addSubview:tiledLayerView];
-        else
-            [_tiledLayersSuperview insertSubview:tiledLayerView atIndex:index];
+        
+        if ([newTileSource isKindOfClass:[MBMBTilesSource class]]) {
+            _lastLayerView = tiledLayerView;
+            
+            ((CATiledLayer *)tiledLayerView.layer).tileSize = CGSizeMake(tileSideLength, tileSideLength);
+            
+            _lastLayerView.layer.zPosition = MAXFLOAT;
+            
+            if (index >= [[_tileSourcesContainer tileSources] count]) {
+                [_tiledLayersSuperview addSubview:tiledLayerView];
+            }
+            else {
+                [_tiledLayersSuperview insertSubview:tiledLayerView atIndex:index];
+            }
+        }
+        else {
+            ((CATiledLayer *)tiledLayerView.layer).tileSize = CGSizeMake(tileSideLength, tileSideLength);
+            
+            if (index >= [[_tileSourcesContainer tileSources] count]) {
+                [_tiledLayersSuperview addSubview:tiledLayerView];
+            }
+            else {
+                [_tiledLayersSuperview insertSubview:tiledLayerView atIndex:index];
+            }
+        }
     }
-
+    
     [self setCenterProjectedPoint:centerPoint animated:NO];
 }
 
