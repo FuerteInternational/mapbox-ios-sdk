@@ -792,17 +792,17 @@
 
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate
 {
-/*    if (_dependantMapView) {
+    if (_dependantMapView) {
         [_dependantMapView setCenterCoordinate:centerCoordinate];
-    }  */
+    }  
     [self setCenterProjectedPoint:[_projection coordinateToProjectedPoint:centerCoordinate]];
 }
 
 - (void)setCenterCoordinate:(CLLocationCoordinate2D)centerCoordinate animated:(BOOL)animated
 {
-/*    if (_dependantMapView) {
+    if (_dependantMapView) {
         [_dependantMapView setCenterCoordinate:centerCoordinate animated:animated];
-    }  */
+    }  
     [self setCenterProjectedPoint:[_projection coordinateToProjectedPoint:centerCoordinate] animated:animated];
 }
 
@@ -824,17 +824,17 @@
 
 - (void)setCenterProjectedPoint:(RMProjectedPoint)centerProjectedPoint
 {
-/*    if (_dependantMapView) {
+    if (_dependantMapView) {
         [_dependantMapView setCenterProjectedPoint:centerProjectedPoint];
-    }  */
+    }  
     [self setCenterProjectedPoint:centerProjectedPoint animated:YES];
 }
 
 - (void)setCenterProjectedPoint:(RMProjectedPoint)centerProjectedPoint animated:(BOOL)animated
 {
- /*   if (_dependantMapView) {
+    if (_dependantMapView) {
         [_dependantMapView setCenterProjectedPoint:centerProjectedPoint animated:animated];
-    }  */
+    } 
     
     if (RMProjectedPointEqualToProjectedPoint(centerProjectedPoint, [self centerProjectedPoint]))
         return;
@@ -864,9 +864,9 @@
 
 - (void)moveBy:(CGSize)delta
 {
-/*    if (_dependantMapView) {
+    if (_dependantMapView) {
         [_dependantMapView moveBy:delta];
-    }  */
+    }
     [self registerMoveEventByUser:NO];
 
     CGPoint contentOffset = _mapScrollView.contentOffset;
@@ -2375,10 +2375,10 @@
 // if #zoom is outside of range #minZoom to #maxZoom, zoom level is clamped to that range.
 - (void)setZoom:(float)newZoom
 {
-/*    if (_dependantMapView)
+    if (_dependantMapView)
     {
         [_dependantMapView setZoom:newZoom];
-    }  */
+    }
     if (_zoom == newZoom)
         return;
 
