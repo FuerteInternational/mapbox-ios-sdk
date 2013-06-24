@@ -39,9 +39,9 @@
     return self;
 }
 
--(void)changeOpacity:(float)opacity 
+-(void)changeOpacity:(float)opacity bAnimated:(bool)bAnimated
 {
-    if (opacity == 0)
+    if (opacity == 0 || !bAnimated)
     {
         self.layer.opacity = opacity;
         return;
