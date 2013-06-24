@@ -39,7 +39,7 @@
     return self;
 }
 
--(void)changeOpacity:(float)opacity
+-(void)changeOpacity:(float)opacity 
 {
     if (opacity == 0)
     {
